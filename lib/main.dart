@@ -1,43 +1,261 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_gpskin/widgets.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyConnectClass(title: 'GP Skin Care'),
+    );
+  }
+}
+
+class MyConnectClass extends StatefulWidget {
+  MyConnectClass({Key key, this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _MyConnectClassState createState() => _MyConnectClassState();
+}
+
+class _MyConnectClassState extends State<MyConnectClass> {
+  Map<DeviceIdentifier, ScanResult> scanResult = new Map();
+  bool isScanning = false;
+
+  void _scanDevice() {
+    FlutterBlue.instance
+        .scan(
+      timeout: Duration(seconds: 10),
+    )
+        .listen((scanResult) {
+      print('localName: ${scanResult.advertisementData.localName}');
+      if (scanResult.advertisementData.localName == "SkinBarrie") {
+        FlutterBlue.instance.stopScan();
+        scanResult.device.connect();
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          scanResult.device.connect();
+          return DeviceScreen(device: scanResult.device);
+        }));
+        print('Device state: ${scanResult.device.state}');
+        print('Device state: ${scanResult.device.discoverServices()}');
+      }
+    });
+  }
+
+  Widget _buildLoading() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            StreamBuilder<List<ScanResult>>(
+              stream: FlutterBlue.instance.scanResults,
+              initialData: [],
+              builder: (c, snapshot) => Column(
+                children: snapshot.data
+                    .map(
+                      (r) => ScanResultTile(
+                        result: r,
+                        onTap: () => Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          r.device.connect();
+                          return DeviceScreen(device: r.device);
+                        })),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: StreamBuilder<bool>(
+        stream: FlutterBlue.instance.isScanning,
+        initialData: false,
+        builder: (c, snapshot) {
+          if (snapshot.data) {
+            return FloatingActionButton(
+              child: Icon(Icons.stop),
+              onPressed: () => FlutterBlue.instance.stopScan(),
+              backgroundColor: Colors.red,
+            );
+          } else {
+            return FloatingActionButton(
+                child: Icon(Icons.search), onPressed: _scanDevice);
+          }
+        },
+      ),
+    );
+  }
+}
+
+class DeviceScreen extends StatelessWidget {
+  const DeviceScreen({Key key, this.device}) : super(key: key);
+
+  final BluetoothDevice device;
+
+  List<Widget> _buildServiceTiles(List<BluetoothService> services) {
+    return services
+        .map(
+          (s) => ServiceTile(
+        service: s,
+        characteristicTiles: s.characteristics
+            .map(
+              (c) => CharacteristicTile(
+            characteristic: c,
+            onReadPressed: () => c.read(),
+            onWritePressed: () => c.write([0x11]),
+            onNotificationPressed: () =>
+                c.setNotifyValue(!c.isNotifying),
+            descriptorTiles: c.descriptors
+                .map(
+                  (d) => DescriptorTile(
+                descriptor: d,
+                onReadPressed: () => d.read(),
+                onWritePressed: () => d.write([0x50]),
+              ),
+            )
+                .toList(),
+          ),
+        )
+            .toList(),
+      ),
+    )
+        .toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(device.name),
+        actions: <Widget>[
+          StreamBuilder<BluetoothDeviceState>(
+            stream: device.state,
+            initialData: BluetoothDeviceState.connecting,
+            builder: (c, snapshot) {
+              VoidCallback onPressed;
+              String text;
+              switch (snapshot.data) {
+                case BluetoothDeviceState.connected:
+                  onPressed = () => device.disconnect();
+                  text = 'DISCONNECT';
+                  break;
+                case BluetoothDeviceState.disconnected:
+                  onPressed = () => device.connect();
+                  text = 'CONNECT';
+                  break;
+                default:
+                  onPressed = null;
+                  text = snapshot.data.toString().substring(21).toUpperCase();
+                  break;
+              }
+              return FlatButton(
+                  onPressed: onPressed,
+                  child: Text(
+                    text,
+                    style: Theme.of(context)
+                        .primaryTextTheme
+                        .button
+                        .copyWith(color: Colors.white),
+                  ));
+            },
+          )
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            StreamBuilder<BluetoothDeviceState>(
+              stream: device.state,
+              initialData: BluetoothDeviceState.connecting,
+              builder: (c, snapshot) => ListTile(
+                leading: (snapshot.data == BluetoothDeviceState.connected)
+                    ? Icon(Icons.bluetooth_connected)
+                    : Icon(Icons.bluetooth_disabled),
+                title: Text(
+                    'Device is ${snapshot.data.toString().split('.')[1]}.'),
+                subtitle: Column(
+                  children: <Widget>[
+                    Text('${device.id}'),
+                    Text('${""}'),
+                  ],
+                ),
+                trailing: StreamBuilder<bool>(
+                  stream: device.isDiscoveringServices,
+                  initialData: false,
+                  builder: (c, snapshot) => IndexedStack(
+                    index: snapshot.data ? 1 : 0,
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(Icons.refresh),
+                        onPressed: () => device.discoverServices(),
+                      ),
+                      IconButton(
+                        icon: SizedBox(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation(Colors.grey),
+                          ),
+                          width: 18.0,
+                          height: 18.0,
+                        ),
+                        onPressed: null,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            StreamBuilder<int>(
+              stream: device.mtu,
+              initialData: 0,
+              builder: (c, snapshot) => ListTile(
+                title: Text('MTU Size'),
+                subtitle: Text('${snapshot.data} bytes'),
+                trailing: IconButton(
+                  icon: Icon
+                    (Icons.edit),
+                  onPressed: () => device.requestMtu(223),
+                ),
+              ),
+            ),
+            StreamBuilder<List<BluetoothService>>(
+              stream: device.services,
+              initialData: [],
+              builder: (c, snapshot) {
+                return Column(
+                  children: _buildServiceTiles(snapshot.data),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -46,68 +264,57 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  bool scanning = false;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  BluetoothDevice device;
+  FlutterBlue flutterBlue = FlutterBlue.instance;
+  List<ScanResult> dta = [];
 
-  void _incrementCounter() {
+  startStop() {
+    if (scanning) {
+      flutterBlue.stopScan();
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text("you have ${dta.length} devices"),
+      ));
+    } else {
+      flutterBlue.startScan(timeout: Duration(seconds: 4));
+    }
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      scanning = !scanning;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+        actions: <Widget>[
+          FlatButton(
+            child: Text(
+              scanning ? "Stop Scanning" : "Start Scanning",
+              style: TextStyle(color: Colors.white, fontSize: 14),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+            onPressed: () {
+              startStop();
+            },
+          )
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      body: StreamBuilder<List<ScanResult>>(
+        stream: FlutterBlue.instance.scanResults,
+        initialData: [],
+        builder: (c, snapshot) {
+          dta = snapshot.data;
+          return ListView.builder(
+            itemCount: snapshot.data.length,
+            itemBuilder: (context, index) {
+              return Text(snapshot.data[index].device.name);
+            },
+          );
+        },
+      ),
     );
   }
 }
