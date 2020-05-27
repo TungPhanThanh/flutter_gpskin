@@ -40,6 +40,21 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  fonts:
+        - family: NanumBarunGothic
+          fonts:
+            - asset: assets/fonts/NanumBarunGothic.ttf
+              weight: 400
+
+  assets:
+       - assets/images/logo_gpskin.png
+       - assets/images/logo_gpskin_blue.png
+  #    - family: RobotoMono
+  #      fonts:
+  #        - asset: fonts/RobotoMono-Regular.ttf
+  #        - asset: fonts/RobotoMono-Bold.ttf
+  #          weight: 700
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

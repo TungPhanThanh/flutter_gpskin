@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_gpskin/splash_screen.dart';
 import 'package:flutter_gpskin/widgets.dart';
 
 void main() {
@@ -10,11 +11,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'GP Skin Care',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: "NanumBarunGothic"
       ),
-      home: MyConnectClass(title: 'GP Skin Care'),
+      home: SplashScreen(),
     );
   }
 }
