@@ -21,9 +21,8 @@ extension ColorExtension on String {
 }
 
 class SplashScreenState extends State<SplashScreen> {
-
   startTime() async {
-    var _duration = new Duration(seconds: 2);
+    var _duration = new Duration(seconds: 5);
     return new Timer(_duration, navigationPage);
   }
 
@@ -43,8 +42,11 @@ class SplashScreenState extends State<SplashScreen> {
     return new Scaffold(
       body: new Container(
         child: new Center(
-          child: new Image.asset('assets/images/logo_gpskin.png'),
-        ),
+            child: new Container(
+              width: 200,
+              height: 54,
+              child: new Image.asset('assets/images/logo/logo.png'),
+        )),
         decoration: new BoxDecoration(color: '#26cef4'.toColor()),
       ),
     );

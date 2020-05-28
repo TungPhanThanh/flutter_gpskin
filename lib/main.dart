@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_gpskin/about_you.dart';
 import 'package:flutter_gpskin/splash_screen.dart';
 import 'package:flutter_gpskin/widgets.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: "NanumBarunGothic"
       ),
-      home: SplashScreen(),
+      home: AboutScreen(),
     );
   }
 }
