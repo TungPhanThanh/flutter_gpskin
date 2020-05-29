@@ -1,10 +1,14 @@
+import 'package:flutter_gpskin/models/subject_setting/Task.dart';
+import 'package:flutter_gpskin/models/subject_setting/body_part.dart';
+import 'package:flutter_gpskin/models/subject_setting/subject_information.dart';
+
 class SubjectSetting {
   int pk;
   String name;
   String description;
-  List<Null> bodyPartList;
-  List<Null> informationList;
-  List<Null> taskList;
+  List<BodyPartList> bodyPartList;
+  List<SubjectInformation> informationList;
+  List<Task> taskList;
   bool showResult;
 
   SubjectSetting(
@@ -21,21 +25,21 @@ class SubjectSetting {
     name = json['name'];
     description = json['description'];
     if (json['bodyPartList'] != null) {
-      bodyPartList = new List<Null>();
+      bodyPartList = new List<BodyPartList>();
       json['bodyPartList'].forEach((v) {
-        bodyPartList.add(new Null.fromJson(v));
+        bodyPartList.add(new BodyPartList.fromJson(v));
       });
     }
     if (json['informationList'] != null) {
-      informationList = new List<Null>();
+      informationList = new List<SubjectInformation>();
       json['informationList'].forEach((v) {
-        informationList.add(new Null.fromJson(v));
+        informationList.add(new SubjectInformation.fromJson(v));
       });
     }
     if (json['taskList'] != null) {
-      taskList = new List<Null>();
+      taskList = new List<Task>();
       json['taskList'].forEach((v) {
-        taskList.add(new Null.fromJson(v));
+        taskList.add(new Task.fromJson(v));
       });
     }
     showResult = json['showResult'];
