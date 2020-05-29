@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:flutter_gpskin/about_you.dart';
-import 'package:flutter_gpskin/splash_screen.dart';
+import 'package:flutter_gpskin/screens/about_you.dart';
+import 'package:flutter_gpskin/screens/splash_screen.dart';
 import 'package:flutter_gpskin/widgets.dart';
+import 'package:http/http.dart' as http;
+
+import 'dart:async';
+import 'dart:convert';
 
 void main() {
   runApp(MyApp());
@@ -23,7 +27,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: "NanumBarunGothic"
       ),
-      home: AboutScreen(),
+      home: FetchData(),
     );
   }
 }
@@ -323,6 +327,84 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           );
         },
+      ),
+    );
+  }
+}
+
+Future<Album> fetchAlbum() async {
+  final response =
+  await http.get('http://gpskin-as-test.us-west-2.elasticbeanstalk.com/information/1');
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    return Album.fromJson(json.decode(response.body));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load album');
+  }
+}
+
+class Album {
+  final int userId;
+  final int id;
+  final String title;
+
+  Album({this.userId, this.id, this.title});
+
+  factory Album.fromJson(Map<String, dynamic> json) {
+    return Album(
+      userId: json['userId'],
+      id: json['id'],
+      title: json['title'],
+    );
+  }
+}
+
+class FetchData extends StatefulWidget {
+  FetchData({Key key}) : super(key: key);
+
+  @override
+  _FetchDataState createState() => _FetchDataState();
+}
+
+class _FetchDataState extends State<FetchData> {
+  Future<Album> futureAlbum;
+
+  @override
+  void initState() {
+    super.initState();
+    futureAlbum = fetchAlbum();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Fetch Data Example',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Fetch Data Example'),
+        ),
+        body: Center(
+          child: FutureBuilder<Album>(
+            future: futureAlbum,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(snapshot.data.title);
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+
+              // By default, show a loading spinner.
+              return CircularProgressIndicator();
+            },
+          ),
+        ),
       ),
     );
   }
