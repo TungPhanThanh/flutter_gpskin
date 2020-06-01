@@ -105,8 +105,9 @@ class LoginScreenState extends State<LoginScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40.0),
                 ),
-                onPressed: () {
-                  _api.loginUser(_userIdController.text, _passwordController.text);},
+                onPressed: () async {
+                  _api.loginUser(_userIdController.text, _passwordController.text)
+                      .then((value) => print('value: '+ value.toJson().toString()));},
                 child: Center(
                   child: Icon(
                     Icons.arrow_forward,

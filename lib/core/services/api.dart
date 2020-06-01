@@ -17,13 +17,12 @@ class Api {
     );
 
     if(response.statusCode == 200){
-
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      return User.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to login.');
     }
-
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
-    return User.fromJson(json.decode(response.body));
   }
 
 //  Future<List<Post>> getPostsForUser(int userId) async {
