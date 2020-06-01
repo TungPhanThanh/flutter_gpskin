@@ -1,12 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class SettingScreen extends StatefulWidget{
+class DeviceID extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() => SettingScreenState();
+  State<StatefulWidget> createState() => DeviceIDState();
 
 }
 
-class SettingScreenState extends State<SettingScreen> {
+class DeviceIDState extends State<DeviceID>{
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,79 +27,91 @@ class SettingScreenState extends State<SettingScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 50.0,),
+            const SizedBox(
+              height: 50.0,
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 40.0),
               child: new Text(
-                "About you",
-                style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w400),
+                "Device ID",
+                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w400),
               ),
             ),
             const SizedBox(height: 10.0),
             Padding(
               padding: const EdgeInsets.only(left: 40.0),
-              child: new Text(
-                "This information is used solely for your solutions.",
-                style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w100,
-                    color: Colors.grey),
+              child: new TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  hintText: 'None',
+                  hintStyle: TextStyle(color: Colors.grey),
+                ),
               ),
             ),
-            const SizedBox(height: 70.0,),
+            const SizedBox(
+              height: 70.0,
+            ),
             Padding(
                 padding: const EdgeInsets.only(left: 40.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      "Title 1",
+                      "Found Devices",
                       style: TextStyle(fontSize: 18.0),
-                    ),
-                    TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: 'Name',
-                        hintStyle: TextStyle(color: Colors.grey),
-                      ),
                     ),
                   ],
                 )),
-            const SizedBox(height: 35.0,),
+            const SizedBox(
+              height: 35.0,
+            ),
             Padding(
                 padding: const EdgeInsets.only(left: 40.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      "Title 2",
+                      "Device ID:",
                       style: TextStyle(fontSize: 18.0),
                     ),
-                    TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: 'Number only',
-                        hintStyle: TextStyle(color: Colors.grey),
-                      ),
+                    Divider(
+                      height: 30.0,
+                      thickness: 1.0,
+                      color: Colors.grey,
                     ),
                   ],
                 )),
-            const SizedBox(height: 35.0,),
+            const SizedBox(height: 20.0),
             Padding(
                 padding: const EdgeInsets.only(left: 40.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      "Title 3",
+                      "Device ID:",
                       style: TextStyle(fontSize: 18.0),
                     ),
-                    TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: 'Minimum 8 characters',
-                        hintStyle: TextStyle(color: Colors.grey),
-                      ),
+                    Divider(
+                      height: 30.0,
+                      thickness: 1.0,
+                      color: Colors.grey,
+                    ),
+                  ],
+                )),
+            const SizedBox(height: 20.0),
+            Padding(
+                padding: const EdgeInsets.only(left: 40.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      "Device ID:",
+                      style: TextStyle(fontSize: 18.0),
+                    ),
+                    Divider(
+                      height: 30.0,
+                      thickness: 1.0,
+                      color: Colors.grey,
                     ),
                   ],
                 )),

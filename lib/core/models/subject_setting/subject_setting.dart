@@ -1,6 +1,6 @@
-import 'package:flutter_gpskin/models/subject_setting/Task.dart';
-import 'package:flutter_gpskin/models/subject_setting/body_part.dart';
-import 'package:flutter_gpskin/models/subject_setting/subject_information.dart';
+import 'package:flutter_gpskin/core/models/subject_setting/Task.dart';
+import 'package:flutter_gpskin/core/models/subject_setting/body_part.dart';
+import 'package:flutter_gpskin/core/models/subject_setting/subject_information.dart';
 
 class SubjectSetting {
   int pk;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gpskin/core/services/api.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -7,6 +8,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
+
+  final Api _api = new Api();
+  TextEditingController _userIdController = new TextEditingController();
+  TextEditingController _passwordController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +65,7 @@ class LoginScreenState extends State<LoginScreen> {
             Padding(
               padding: const EdgeInsets.only(left: 40.0),
               child: TextField(
+                controller: _userIdController,
                 decoration: InputDecoration(
                     labelText: "Log In ID", hasFloatingPlaceholder: true),
               ),
@@ -71,6 +77,7 @@ class LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.only(left: 40.0),
               child: TextField(
                 obscureText: true,
+                controller: _passwordController,
                 decoration: InputDecoration(
                     labelText: "Password", hasFloatingPlaceholder: true),
               ),
@@ -98,7 +105,8 @@ class LoginScreenState extends State<LoginScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40.0),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  _api.loginUser(_userIdController.text, _passwordController.text);},
                 child: Center(
                   child: Icon(
                     Icons.arrow_forward,

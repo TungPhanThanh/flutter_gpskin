@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gpskin/screens/login.dart';
+import 'package:flutter_gpskin/ui/screens/login.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -22,7 +22,7 @@ extension ColorExtension on String {
 
 class SplashScreenState extends State<SplashScreen> {
   startTime() async {
-    var _duration = new Duration(seconds: 5);
+    var _duration = new Duration(seconds: 3);
     return new Timer(_duration, navigationPage);
   }
 

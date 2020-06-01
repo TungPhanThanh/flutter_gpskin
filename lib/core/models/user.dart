@@ -1,7 +1,7 @@
-import 'package:flutter_gpskin/models/information_list.dart';
-import 'package:flutter_gpskin/models/measurement_list.dart';
-import 'package:flutter_gpskin/models/subject_setting/subject_setting.dart';
-import 'package:flutter_gpskin/models/task_result.dart';
+import 'package:flutter_gpskin/core/models/information_list.dart';
+import 'package:flutter_gpskin/core/models/measurement_list.dart';
+import 'package:flutter_gpskin/core/models/subject_setting/subject_setting.dart';
+import 'package:flutter_gpskin/core/models/task_result.dart';
 
 class User {
   int _pk;
