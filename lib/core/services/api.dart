@@ -5,11 +5,11 @@ import 'package:http/http.dart' as http;
 
 /// The service responsible for networking requests
 class Api {
-  static const endpoint = 'http://gpskin-as-test.us-west-2.elasticbeanstalk.com/';
+  static const endpoint = '';
 
   var client = new http.Client();
 
-  Future<User> loginUser(String userId, String password) async {
+  Future<int> loginUser(String userId, String password) async {
     final http.Response response = await http.post(
       '$endpoint/subject/signIn/',
       headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',},
@@ -17,13 +17,11 @@ class Api {
     );
 
     if(response.statusCode == 200){
-
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      User.fromJson(json.decode(response.body));
     }
-
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
-    return User.fromJson(json.decode(response.body));
+    return response.statusCode;
   }
 
 //  Future<List<Post>> getPostsForUser(int userId) async {
