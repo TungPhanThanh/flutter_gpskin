@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gpskin/core/services/api.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -8,10 +7,19 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
-
   final Api _api = new Api();
   TextEditingController _userIdController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
+  bool _loginState = false;
+  bool _validateId = false;
+  bool _validatePassword = false;
+
+  @override
+  void dispose() {
+    _userIdController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +75,10 @@ class LoginScreenState extends State<LoginScreen> {
               child: TextField(
                 controller: _userIdController,
                 decoration: InputDecoration(
-                    labelText: "Log In ID", hasFloatingPlaceholder: true),
+                  labelText: "Log In ID",
+                  hasFloatingPlaceholder: true,
+                  errorText: _validateId ? 'ID field Can\'t Be Empty' : null,
+                ),
               ),
             ),
             const SizedBox(
@@ -79,7 +90,10 @@ class LoginScreenState extends State<LoginScreen> {
                 obscureText: true,
                 controller: _passwordController,
                 decoration: InputDecoration(
-                    labelText: "Password", hasFloatingPlaceholder: true),
+                  labelText: "Password",
+                  hasFloatingPlaceholder: true,
+                  errorText: _validatePassword ? 'Password field Can\'t Be Empty' : null,
+                ),
               ),
             ),
             const SizedBox(
@@ -88,10 +102,13 @@ class LoginScreenState extends State<LoginScreen> {
             Container(
                 padding: const EdgeInsets.only(left: 40.0),
                 alignment: Alignment.centerRight,
-                child: Text(
-                  "There is no account matching the information you entered. Please check again",
-                  style: TextStyle(
-                    color: Colors.redAccent,
+                child: Visibility(
+                  visible: _loginState,
+                  child: Text(
+                    "There is no account matching the information you entered. Please check again",
+                    style: TextStyle(
+                      color: Colors.redAccent,
+                    ),
                   ),
                 )),
             const SizedBox(height: 50.0),
@@ -105,9 +122,20 @@ class LoginScreenState extends State<LoginScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40.0),
                 ),
-                onPressed: () async {
-                  _api.loginUser(_userIdController.text, _passwordController.text)
-                      .then((value) => print('value: '+ value.toJson().toString()));},
+                onPressed: () {
+                  setState(() {
+                    if(_userIdController.text.isEmpty == false){
+                      _validateId = false;
+                      if(_passwordController.text.isEmpty == false){
+                        _validatePassword = false;
+                        _api.loginUser(_userIdController.text, _passwordController.text).then((value) {
+                          value == 200 ? _loginState = false : _loginState = true;
+                        });
+                      } else _validatePassword = true;
+                    } else _validateId = true;
+//                    _text.text.isEmpty ? _validate = true : _validate = false;
+                  });
+                },
                 child: Center(
                   child: Icon(
                     Icons.arrow_forward,
