@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 /// The service responsible for networking requests
 class Api {
-  static const endpoint = '';
+  static const endpoint = 'http://gpskin-as-test.us-west-2.elasticbeanstalk.com/';
 
   var client = new http.Client();
 
