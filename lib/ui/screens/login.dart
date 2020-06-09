@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gpskin/core/models/user.dart';
 import 'package:flutter_gpskin/core/services/api.dart';
-import 'package:flutter_gpskin/ui/screens/home.dart';
+import 'package:flutter_gpskin/ui/screens/about_you.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -9,6 +10,7 @@ class LoginScreen extends StatefulWidget {
 
 class LoginScreenState extends State<LoginScreen> {
   final Api _api = new Api();
+  final User _user = new User();
   TextEditingController _userIdController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -145,6 +147,7 @@ class LoginScreenState extends State<LoginScreen> {
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
                         showDialog(
+                            barrierDismissible: false,
                             context: context,
                             builder: (BuildContext context) {
                               return Center(
@@ -153,34 +156,16 @@ class LoginScreenState extends State<LoginScreen> {
                             });
                         _api.loginUser(_userIdController.text, _passwordController.text)
                             .then((value) {
-                          if (value == 200) {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(builder: (context) => HomePage()),
-                                  (Route<dynamic> route) => false,
+                              if (value == 200) {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AboutScreen()),
+                                      (Route<dynamic> route) => false,
                             );
-                          } else
-                            Navigator.pop(context);
+                          } else Navigator.pop(context);
                         }).catchError((e) => null);
                       }
-//                  setState(() {
-//                    if(_userIdController.text.isEmpty == false){
-//                      _validateId = false;
-//                      if(_passwordController.text.isEmpty == false){
-//                        _validatePassword = false;
-//                        showDialog(
-//                            context: context,
-//                            builder: (BuildContext context) {
-//                              return Center(child: CircularProgressIndicator(),);
-//                            });
-//                        _api.loginUser(_userIdController.text, _passwordController.text).then((value) {
-//                          value == 200 ? _loginState = false : _loginState = true;
-//                          Navigator.pop(context);
-//                        });
-//                      } else _validatePassword = true;
-//                    } else _validateId = true;
-////                    _text.text.isEmpty ? _validate = true : _validate = false;
-//                  });
                     },
                     child: Center(
                       child: Icon(

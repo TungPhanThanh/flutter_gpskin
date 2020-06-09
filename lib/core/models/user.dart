@@ -14,7 +14,7 @@ class User {
   bool _deleted;
   bool _activate;
 
-  User({int pk, String subjectId, String password, List<Null> measurementList, SubjectSetting subjectSetting, List<Null> taskResultList, List<Null> informationList, bool deleted, bool activate}) {
+  User({int pk, String subjectId, String password, List<MeasurementList> measurementList, SubjectSetting subjectSetting, List<TaskResultList> taskResultList, List<InformationList> informationList, bool deleted, bool activate}) {
     this._pk = pk;
     this._subjectId = subjectId;
     this._password = password;
