@@ -6,12 +6,12 @@ class SettingScreen extends StatefulWidget {
 }
 
 class SettingScreenState extends State<SettingScreen> {
-  TextEditingController _IdController = new TextEditingController();
+  TextEditingController _idcontroller = new TextEditingController();
   TextEditingController _ScheduleController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    _IdController.text = "User ID";
+    _idcontroller.text = "User ID";
     _ScheduleController.text = "2020.03.11 - 2020.04.11";
     return Scaffold(
       body: SingleChildScrollView(
@@ -65,7 +65,7 @@ class SettingScreenState extends State<SettingScreen> {
                     TextField(
                       readOnly: true,
                       enabled: false,
-                      controller: _IdController,
+                      controller: _idcontroller,
                       style: TextStyle(color: Colors.blue),
                       decoration: InputDecoration(),
                     ),

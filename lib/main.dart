@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_gpskin/ui/screens/connect_device.dart';
+import 'package:flutter_gpskin/ui/screens/home.dart';
 import 'package:flutter_gpskin/ui/screens/splash_screen.dart';
 import 'package:flutter_gpskin/ui/widgets/widgets.dart';
 
@@ -40,12 +42,15 @@ class _MyConnectClassState extends State<MyConnectClass> {
   Map<DeviceIdentifier, ScanResult> scanResult = new Map();
   bool isScanning = false;
 
+
+  @override
+  void initState() {
+    super.initState();
+    _scanDevice();
+  }
+
   void _scanDevice() {
-    FlutterBlue.instance
-        .scan(
-      timeout: Duration(seconds: 10),
-    )
-        .listen((scanResult) {
+    FlutterBlue.instance.scan(timeout: Duration(hours: 2),).listen((scanResult) {
       print('localName: ${scanResult.advertisementData.localName}');
       if (scanResult.advertisementData.localName == "SkinBarrie") {
         FlutterBlue.instance.stopScan();
