@@ -164,7 +164,7 @@ class LoginScreenState extends State<LoginScreen> {
                                       (Route<dynamic> route) => false,
                             );
                           } else Navigator.pop(context);
-                        }).catchError((e) => null);
+                        }).catchError((e) => Future.delayed(Duration(seconds: 10)));
                       }
                     },
                     child: Center(

@@ -132,7 +132,6 @@ class AboutScreenState extends State<AboutScreen> {
                                     return '1~10 length and only Numeric Text';
                                 },
                                 controller: _field2Controller,
-                                obscureText: true,
                               ),
                             ],
                           )),

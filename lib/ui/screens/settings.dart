@@ -6,13 +6,13 @@ class SettingScreen extends StatefulWidget {
 }
 
 class SettingScreenState extends State<SettingScreen> {
-  TextEditingController _idcontroller = new TextEditingController();
-  TextEditingController _ScheduleController = new TextEditingController();
+  TextEditingController _idController = new TextEditingController();
+  TextEditingController _scheduleController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    _idcontroller.text = "User ID";
-    _ScheduleController.text = "2020.03.11 - 2020.04.11";
+    _idController.text = "User ID";
+    _scheduleController.text = "2020.03.11 - 2020.04.11";
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -22,10 +22,13 @@ class SettingScreenState extends State<SettingScreen> {
             Padding(
               padding: const EdgeInsets.only(left: 35.0),
               child: new Container(
-                child: new Icon(
-                  Icons.arrow_back,
-                  size: 30.0,
-                  color: Colors.grey,
+                child: new InkWell(
+                  child: new Icon(
+                    Icons.arrow_back,
+                    size: 30.0,
+                    color: Colors.grey,
+                  ),
+                  onTap: () => Navigator.pop(context),
                 ),
               ),
             ),
@@ -65,7 +68,7 @@ class SettingScreenState extends State<SettingScreen> {
                     TextField(
                       readOnly: true,
                       enabled: false,
-                      controller: _idcontroller,
+                      controller: _idController,
                       style: TextStyle(color: Colors.blue),
                       decoration: InputDecoration(),
                     ),
@@ -86,7 +89,7 @@ class SettingScreenState extends State<SettingScreen> {
                     TextField(
                       readOnly: true,
                       enabled: false,
-                      controller: _ScheduleController,
+                      controller: _scheduleController,
                       style: TextStyle(color: Colors.blue),
                       decoration: InputDecoration(),
                     ),
@@ -136,12 +139,13 @@ class SettingScreenState extends State<SettingScreen> {
                       children: [
                         Expanded(
                           child: Text(
-                          "Log out",
-                          style: TextStyle(fontSize: 18.0, color: Colors.red),
-                        ),),
+                            "Log out",
+                            style: TextStyle(fontSize: 18.0, color: Colors.red),
+                          ),),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                          child: Icon(Icons.exit_to_app, size: 30.0,color: Colors.grey,),
+                          child: Icon(
+                            Icons.exit_to_app, size: 30.0, color: Colors.grey,),
                         )
                       ],
                     ),
@@ -151,7 +155,8 @@ class SettingScreenState extends State<SettingScreen> {
                       color: Colors.grey,
                     ),
                   ],
-                )),
+                )
+            ),
           ],
         ),
       ),
